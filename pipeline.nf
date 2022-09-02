@@ -107,7 +107,7 @@ process tabulate {
     library(tidyverse)
 
     read_csv("$trace") %>%
-    group_by(r, m_truth, s1_truth, s2_truth, types, name) %>%
+    group_by(r, m_truth, s1_truth, s2_truth, name) %>%
     summarize(median=median(value),
         lower=quantile(value, probs=0.025),
         upper=quantile(value, probs=0.975)) %>%
