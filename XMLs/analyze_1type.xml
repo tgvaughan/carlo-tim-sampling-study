@@ -15,7 +15,7 @@
   <run spec="MCMC" chainLength="1000000">
     <state spec="State" storeEvery="5000">
 
-      <stateNode id="origin" spec="RealParameter" value="10"/>
+      <stateNode id="origin" spec="RealParameter" value="10" upper="20"/>
       <stateNode id="R0Values" spec="RealParameter" value="1.0"/>
       <stateNode id="sampPropValues" spec="RealParameter" value="0.1" upper="1"/>
     </state>
@@ -49,11 +49,13 @@
     <logger fileName="$(outputFile=output.log)" logEvery="1000">
       <log idref="R0Values"/>
       <log idref="sampPropValues"/>
+      <log idref="origin"/>
     </logger>
 
     <logger logEvery="10000">
       <log idref="R0Values"/>
       <log idref="sampPropValues"/>
+      <log idref="origin"/>
     </logger>
   </run>
 </beast>

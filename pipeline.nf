@@ -24,7 +24,7 @@ process simulate_data {
 
     script:
     """
-    java -jar ~/code/beast_and_friends/remaster/out/artifacts/remaster_jar/remaster.jar \
+    java -jar $projectDir/jars/remaster.jar \
         -D Re1=1.5 \
         -D Re2=1.1 \
         -D bu=1 \
@@ -53,7 +53,7 @@ process analyze {
 
     script:
     """
-    java -jar ~/code/beast_and_friends/bdmm-prime/out/artifacts/bdmm_prime_jar/bdmm-prime.jar \
+    java -jar $projectDir/jars/bdmm-prime.jar \
         -overwrite \
         -D tree="$tree" \
         -D removalProb="$r" \

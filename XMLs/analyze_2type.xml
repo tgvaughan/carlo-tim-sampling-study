@@ -17,10 +17,10 @@
   <run spec="MCMC" chainLength="1000000">
     <state spec="State" storeEvery="5000">
 
-      <stateNode id="origin" spec="RealParameter" value="10"/>
+      <stateNode id="origin" spec="RealParameter" value="10" upper="20"/>
       <stateNode id="R0Values" spec="RealParameter" value="1.0 1.0"/>
       <stateNode id="sampPropValues" spec="RealParameter" value="0.1 0.1" upper="1"/>
-      <stateNode id="m" spec="RealParameter" value="0.1 0.1" lower="1e-2" upper="1e2"/>
+      <stateNode id="m" spec="RealParameter" value="0.1 0.1" lower="1e-2" upper="10"/>
     </state>
 
     <distribution spec="CompoundDistribution">
@@ -28,7 +28,8 @@
                     spec="BirthDeathMigrationDistribution"
                     tree="@tree"
                     typeLabel="type"
-                    frequencies="1 0">
+                    frequencies="1 0"
+                    parallelize="false">
         <parameterization spec="EpiParameterization"
                           processLength="@origin"
                           typeSet="@typeSet">
@@ -65,12 +66,14 @@
       <log idref="R0Values"/>
       <log idref="sampPropValues"/>
       <log idref="m"/>
+      <log idref="origin"/>
     </logger>
 
     <logger logEvery="10000">
       <log idref="R0Values"/>
       <log idref="sampPropValues"/>
       <log idref="m"/>
+      <log idref="origin"/>
     </logger>
   </run>
 </beast>
