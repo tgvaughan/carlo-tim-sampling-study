@@ -39,7 +39,7 @@ process simulate_data {
 }
 
 process analyze {
-    label: 'long'
+    label 'long'
 
     input:
     each path(analysis_xml)
