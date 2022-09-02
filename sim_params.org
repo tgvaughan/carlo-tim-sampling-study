@@ -1,0 +1,34 @@
+#+title: Simulation Setup
+
+This is the table which Carlo sent:
+
+|----------+---+-----+----+----+------+----|
+| Scenario | r |   m | s1 | s2 | BDMM | BD |
+|----------+---+-----+----+----+------+----|
+|        1 | 1 | 0.3 | H  | L  | v    | v  |
+|        2 | 1 | 0.3 | H  | H  | v    | v  |
+|        3 | 1 | 0.3 | M  | M  | v    | v  |
+|        4 | 1 | 0.3 | L  | L  | v    | v  |
+|        5 | 0 | 0.3 | H  | L  | v    | v  |
+|        6 | 0 | 0.3 | H  | H  | v    | v  |
+|        7 | 0 | 0.3 | M  | M  | v    | v  |
+|        8 | 0 | 0.3 | L  | L  | v    | v  |
+|        9 | 1 | 0.8 | H  | L  | v    | v  |
+|       10 | 1 | 0.8 | H  | H  | v    | v  |
+|       11 | 1 | 0.8 | M  | M  | v    | v  |
+|       12 | 1 | 0.8 | L  | L  | v    | v  |
+|       13 | 0 | 0.8 | H  | L  | v    | v  |
+|       14 | 0 | 0.8 | H  | H  | v    | v  |
+|       15 | 0 | 0.8 | M  | M  | v    | v  |
+|       16 | 0 | 0.8 | L  | L  | v    | v  |
+|----------+---+-----+----+----+------+----|
+
+
+Other possibilities: 
+- Re varying over time
+- s varying over time
+- Variable number of epochs
+
+
+* Simulator
+

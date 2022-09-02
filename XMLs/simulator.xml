@@ -1,0 +1,73 @@
+<beast version="2.0" namespace="beast.core.parameter:beast.core:remaster">
+
+    <param id="Re0" spec="RealParameter" value="$(Re1=1.5)"/>
+    <param id="Re1" spec="RealParameter" value="$(Re2=1.1)"/>
+    <param id="r" spec="RealParameter" value="$(r=1)"/>
+    <param id="bu" spec="RealParameter" value="$(bu=1)"/>
+    <param id="s0" spec="RealParameter" value="$(s1=0.2)"/>
+    <param id="s1" spec="RealParameter" value="$(s2=0.2)"/>
+    <param id="m" spec="RealParameter" value="$(m=0.3)"/>
+
+    <plate var="i" range="0,1">
+
+    <param id="lambda$(i)" spec="feast.expressions.ExpCalculator" value="Re$(i)*bu">
+        <arg idref="Re$(i)"/>
+        <arg idref="bu"/>
+    </param>
+
+    <param id="mu$(i)" spec="feast.expressions.ExpCalculator" value="bu*(1-r*s$(i)/(1+s$(i)*(r-1)))">
+        <arg idref="bu"/>
+        <arg idref="s$(i)"/>
+        <arg idref="r"/>
+    </param>
+
+    <param id="psi$(i)" spec="feast.expressions.ExpCalculator" value="bu*s$(i)/(1+s$(i)*(r-1))">
+        <arg idref="bu"/>
+        <arg idref="s$(i)"/>
+        <arg idref="r"/>
+    </param>
+
+    <param id="psi_remove$(i)" spec="feast.expressions.ExpCalculator" value="psi$(i)*r">
+        <arg idref="psi$(i)"/>
+        <arg idref="r"/>
+    </param>
+
+    <param id="psi_noremove$(i)" spec="feast.expressions.ExpCalculator" value="psi$(i)*(1-r)">
+        <arg idref="psi$(i)"/>
+        <arg idref="r"/>
+    </param>
+
+    </plate>
+
+
+  <run spec="Simulator" nSims="1">
+    <simulate spec="SimulatedTree" id="tree">
+      <trajectory spec="StochasticTrajectory" id="traj" maxTime="10"
+                  mustHave="sum(sample)>10 &amp;&amp; sum(sample)&lt;500">
+        <population spec="RealParameter" id="X" value="1 0"/>
+        <samplePopulation spec="RealParameter" id="sample" value="0 0"/>
+
+        <plate var="i" range="0,1">
+          <reaction spec="Reaction" rate="@lambda$(i)" value="X[$(i)] -> 2X[$(i)]"/>
+          <reaction spec="Reaction" rate="@mu$(i)" value="X[$(i)] -> 0"/>
+          <reaction spec="Reaction" rate="@psi_remove$(i)" value="X[$(i)] -> sample[$(i)]"/>
+          <reaction spec="Reaction" rate="@psi_noremove$(i)" value="X[$(i)] -> X[$(i)] + sample[$(i)]"/>
+          <plate var="j" range="0,1">
+            <reaction spec="Reaction" rate="@m" value="X[$(i)] -> X[$(j)]"/>
+          </plate>
+        </plate>
+      </trajectory>
+    </simulate>
+
+    <logger spec="Logger" mode="tree"
+            fileName="$(filebase).r$(r)_m$(m)_s1$(s1)_s2$(s2)_rep$(seed).tree">
+      <log spec="TypedTreeLogger" removeSingletonNodes="true" tree="@tree"/>
+      <!-- <log idref="tree"/> -->
+    </logger>
+
+    <logger spec="Logger"
+            fileName="$(filebase).r$(r)_m$(m)_s1$(s1)_s2$(s2)_rep$(seed).traj"
+            log="@traj"/>
+
+  </run>
+</beast>

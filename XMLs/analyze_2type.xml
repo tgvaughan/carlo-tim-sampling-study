@@ -1,0 +1,76 @@
+<beast version="2.0"
+       namespace="beast.core
+                  :beast.core.util
+                  :beast.core.parameter
+                  :beast.evolution.operators
+                  :beast.math.distributions
+                  :bdmmprime.distribution
+                  :bdmmprime.parameterization
+                  :feast.fileio">
+
+  <tree id="tree"
+        spec="TreeFromNexusFile" fileName="$(tree)"
+        IsLabelledNewick="true" adjustTipHeights="false"/>
+
+  <typeSet id="typeSet" spec="TypeSet" value="X{0},X{1}"/>
+
+  <run spec="MCMC" chainLength="1000000">
+    <state spec="State" storeEvery="5000">
+
+      <stateNode id="origin" spec="RealParameter" value="10"/>
+      <stateNode id="R0Values" spec="RealParameter" value="1.0 1.0"/>
+      <stateNode id="sampPropValues" spec="RealParameter" value="0.1 0.1" upper="1"/>
+      <stateNode id="m" spec="RealParameter" value="0.1 0.1" lower="1e-2" upper="1e2"/>
+    </state>
+
+    <distribution spec="CompoundDistribution">
+      <distribution id="likelihood"
+                    spec="BirthDeathMigrationDistribution"
+                    tree="@tree"
+                    typeLabel="type"
+                    frequencies="1 0">
+        <parameterization spec="EpiParameterization"
+                          processLength="@origin"
+                          typeSet="@typeSet">
+          <R0 spec="SkylineVectorParameter" skylineValues="@R0Values"/>
+          <becomeUninfectiousRate spec="SkylineVectorParameter" skylineValues="1"
+                                  typeSet="@typeSet"/>
+          <samplingProportion spec="SkylineVectorParameter" skylineValues="@sampPropValues"/>
+          <removalProb spec="SkylineVectorParameter" skylineValues="$(removalProb=1)"
+                       typeSet="@typeSet"/>
+          <migrationRate spec="SkylineMatrixParameter" skylineValues="@m" typeSet="@typeSet"/>
+        </parameterization>
+      </distribution>
+
+      <distribution spec="beast.math.distributions.Prior" x="@R0Values">
+        <distr spec="LogNormalDistributionModel" M="0.8" S="0.5"/>
+      </distribution>
+
+      <distribution spec="beast.math.distributions.Prior" x="@origin">
+        <distr spec="OneOnX" />
+      </distribution>
+
+      <distribution spec="beast.math.distributions.Prior" x="@m">
+        <distr spec="OneOnX" />
+      </distribution>
+
+    </distribution>
+
+    <operator spec="ScaleOperator" scaleFactor="0.8" weight="1" parameter="@R0Values"/>
+    <operator spec="ScaleOperator" scaleFactor="0.8" weight="1" parameter="@sampPropValues" />
+    <operator spec="ScaleOperator" scaleFactor="0.8" weight="1" parameter="@origin" />
+    <operator spec="ScaleOperator" scaleFactor="0.8" weight="1" parameter="@m" />
+
+    <logger fileName="$(outputFile=output.log)" logEvery="1000">
+      <log idref="R0Values"/>
+      <log idref="sampPropValues"/>
+      <log idref="m"/>
+    </logger>
+
+    <logger logEvery="10000">
+      <log idref="R0Values"/>
+      <log idref="sampPropValues"/>
+      <log idref="m"/>
+    </logger>
+  </run>
+</beast>
