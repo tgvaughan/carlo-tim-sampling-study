@@ -84,7 +84,7 @@ process process_traces {
 
     read_tsv("$trace") %>% slice_tail(prop=0.9) %>%
     mutate(r=$r, m_truth=$m, s1_truth=$s1, s2_truth=$s2, rep=$rep) %>%
-    pivot_longer(cols=c(R0Values, sampPropValues)) %>%
+    pivot_longer(cols=-Sample) %>%
     write_csv("processed.log")
     """
     
